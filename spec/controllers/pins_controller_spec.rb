@@ -1,7 +1,8 @@
 require 'spec_helper'
+
 RSpec.describe PinsController do
 
-   describe "GET index" do
+  describe "GET index" do
     it "renders the index template" do
       get :index
       expect(response).to render_template("index")
@@ -13,7 +14,12 @@ RSpec.describe PinsController do
     end
   end
 
-   describe "GET new" do
+  describe "GET new" do
+    it "responds with success" do
+      get :new
+      expect(response).to have_http_status(:success)
+    end
+
     it "renders the new template" do
       get :new
       expect(response).to render_template(:new)
@@ -21,7 +27,7 @@ RSpec.describe PinsController do
 
     it "gives a new Pin record" do
       get :new
-      expect(assigns[:pin]).to be_new_record
+      expect(assigns[:pin]).to be_a_new(Pin)
     end
   end
 
@@ -81,4 +87,25 @@ RSpec.describe PinsController do
     end
   end
 
+  describe "GET edit" do
+    pin = Pin.first
+    it "responds with success" do
+      get :edit, id: pin.id
+      expect(response).to have_http_status(:success)
+    end
+
+    it "renders the edit template" do
+      get :edit, id: pin.id
+      expect(response).to render_template(:edit)
+    end
+
+    it "assigns an instance variable called @pin to the Pin with the appropriate id" do
+      get :edit, id: pin.id
+      expect(assigns[:pin]).to eq(Pin.find(pin.id))
+    end
+  end
+
+  describe "update" do
+
+  end
 end
