@@ -35,7 +35,7 @@ end
     @pin = Pin.find(params[:id])
   end
 
-  def update
+ def update
     @pin = Pin.find(params[:id])
   
   if @pin.update_attributes!(pin_params)
@@ -43,8 +43,9 @@ end
   else
     @errors = @pin.errors
     render :edit
+    end
   end
-  end
+  
 private
   def pin_params
     params.require(:pin).permit(:title, :url, :slug, :text, :category_id, :resource_type, :image)

@@ -1,111 +1,170 @@
 require 'spec_helper'
 
 RSpec.describe PinsController do
-
-  describe "GET index" do
-    it "renders the index template" do
-      get :index
-      expect(response).to render_template("index")
-    end
-
-    it "populates @pins with all pins" do
-      get :index
-      expect(assigns[:pins]).to eq(Pin.all)
-    end
+   describe "GET index" do
+ 
+      it 'renders the index template' do
+        get :index
+        expect(response).to render_template(:index)
+      end 
+    
+  it 'populates @pins with all pins' do
+    get :index
+    expect(assigns[:pins]).to eq(Pin.all)
   end
-
-  describe "GET new" do
-    it "responds with success" do
+end
+describe "GET new" do
+    it 'responds with successfully' do
       get :new
-      expect(response).to have_http_status(:success)
+      expect(response.success?).to be(true)
     end
-
-    it "renders the new template" do
-      get :new
+    
+    it 'renders the new view' do
+      get :new      
       expect(response).to render_template(:new)
     end
-
-    it "gives a new Pin record" do
+    
+    it 'assigns an instance variable to a new pin' do
       get :new
-      expect(assigns[:pin]).to be_a_new(Pin)
+      expect(assigns(:pin)).to be_a_new(Pin)
     end
   end
-
-  describe "create" do
-
-    context "with valid attributes" do
-      valid_attributes = { title: "Some title", url: "http://someurl.com",
-          text: "Some text", slug: "some-slug", category_id: 1 }
-
-      after(:each) do
-        pin = Pin.find_by_slug("some-slug")
-        if !pin.nil?
-          pin.destroy
-        end
-      end
-
-      it "should be valid" do
-        pin = Pin.new(valid_attributes)
-        expect(pin).to be_valid
-      end
-
-      it "saves the new pin in the database" do
-        expect {
-          post :create, pin: valid_attributes
-        }.to change(Pin, :count).by(1)
-      end
-
-      it "redirects to the pin's page" do
-        post :create, pin: valid_attributes
-        expect(response.redirect?).to be(true)
-      end
-
-      it "does not have any errors" do
-        post :create, pin: valid_attributes
-        expect(assigns[:errors]).to be_nil
+  
+  describe "POST create" do
+    before(:each) do
+      @pin_hash = { 
+        title: "Rails Wizard", 
+        url: "http://railswizard.org", 
+        slug: "rails-wizard", 
+        text: "A fun and helpful Rails Resource",
+        category_id: "2"}    
+    end
+    
+    after(:each) do
+      pin = Pin.find_by_slug("rails-wizard")
+      if !pin.nil?
+        pin.destroy
       end
     end
-
-    context "with invalid attributes" do
-      invalid_attributes = { some_attribute: "derp" }
-
-      it "does not save the new pin in the database" do
-        expect {
-          post :create, pin: invalid_attributes
-        }.to_not change(Pin, :count)
-      end
-
-      it "renders the new template" do
-        post :create, pin: invalid_attributes
-        expect(response).to render_template(:new)
-      end
-
-      it "renders the new template with errors" do
-        post :create, pin: invalid_attributes
-        expect(assigns[:errors]).to_not be_nil
-      end
+    
+    it 'responds with a redirect' do
+      post :create, pin: @pin_hash
+      expect(response.redirect?).to be(true)
     end
+    
+    it 'creates a pin' do
+      post :create, pin: @pin_hash  
+      expect(Pin.find_by_slug("rails-wizard").present?).to be(true)
+    end
+    
+    it 'redirects to the show view' do
+      post :create, pin: @pin_hash
+      expect(response).to redirect_to(pin_url(assigns(:pin)))
+    end
+    
+    it 'redisplays new form on error' do
+      # The title is required in the Pin model, so we'll
+      # delete the title from the @pin_hash in order
+      # to test what happens with invalid parameters
+      @pin_hash.delete(:title)
+      post :create, pin: @pin_hash
+      expect(response).to render_template(:new)
+    end
+    
+    it 'assigns the @errors instance variable on error' do
+      # The title is required in the Pin model, so we'll
+      # delete the title from the @pin_hash in order
+      # to test what happens with invalid parameters
+      @pin_hash.delete(:title)
+      post :create, pin: @pin_hash
+      expect(assigns[:errors].present?).to be(true)
+    end    
+    
   end
-
   describe "GET edit" do
-    pin = Pin.first
-    it "responds with success" do
-      get :edit, id: pin.id
-      expect(response).to have_http_status(:success)
+  
+    before(:each) do
+      @pin_hash = { 
+        title: "Rails Wizard", 
+        url: "http://railswizard.org", 
+        slug: "rails-wizard", 
+        text: "A fun and helpful Rails Resource",
+        category_id: "2"}    
     end
-
-    it "renders the edit template" do
-      get :edit, id: pin.id
-      expect(response).to render_template(:edit)
+    
+    after(:each) do
+      pin = Pin.find_by_slug("rails-wizard")
+      if !pin.nil?
+        pin.destroy
+      end
     end
-
-    it "assigns an instance variable called @pin to the Pin with the appropriate id" do
-      get :edit, id: pin.id
-      expect(assigns[:pin]).to eq(Pin.find(pin.id))
-    end
+    #get to pin/id/edit
+  #responds successfully
+  it 'responds with successfully' do
+    get :edit, id: @pin_hash
+    expect(response.success?).to be(true)
   end
-
-  describe "update" do
-
+  #renders the edit template
+  it 'renders the edit view' do
+    get :edit, id: @pin_hash
+    expect(response).to render_template(:edit)
+  end
+  #assigns an instance variable called @pin to the Pin with the appropriate id
+  it 'assigns an instance variable to the appropriate pin' do
+    get :edit, id: @pin_hash
+    expect(assigns(:pin)).to eq(Pin.fin_by_slug(@pin_hash[:slug]))
+  end
+end
+  describe "PUT update" do
+  
+  before(:each) do
+      @pin_hash = { 
+        title: "Rails Wizard", 
+        url: "http://railswizard.org", 
+        slug: "rails-wizard", 
+        text: "A fun and helpful Rails Resource",
+        category_id: "2"}    
+    
+    @pin = Pin.create(
+      title: "Rails Wizard", 
+        url: "http://railswizard.org", 
+        slug: "rails-wizard", 
+        text: "A fun and helpful Rails Resource",
+        category_id: "2")
+    end
+    after(:each) do
+      pin = Pin.find_by_slug("rails-wizard")
+      if !pin.nil?
+        pin.destroy
+      end
+    end
+  
+  it 'responds with successfully' do
+    put :update, pin: @pin_hash, id: @pin
+    expect(repsonse.redirect?).to be(true)
+  end
+  
+  it 'updates a pin' do
+    @pin_hash[:title] = "test"
+    put :update, pin: @pin_hash, id: @pin
+    expect(assigns(:pin)[:title]).to eq(@pin_hash[:title])
+  end
+  
+  it 'redirects to show view' do
+    put :update, pin: @pin_hash, id: @pin
+    expect(response).to redirect_to(pin_url(assigns(:pin)))
+  end
+  
+  it 'assigns the @errors instance variable on error' do
+    @pin_hash[:title] = ""
+    put :update, pin: @pin_hash, id: @pin
+    expect(assigns[:errors].present?).to be(true)
+  end
+  
+  it 'renders edit when there is an error' do
+    @pin_hash[:title] = ""
+    put :update, pin: @pin_hash, id: @pin
+    expect(response).to render_template(:edit)
+  end
   end
 end

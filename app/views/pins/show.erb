@@ -1,10 +1,14 @@
 <div class="header">
   <h1>
-    <i class="fa fa-laptop"></i> <%= "#{@pin.title}" %>
+    <i class="fa fa-laptop"></i> 
+    <%= "#{@pin.title}" %>
   </h1>
 </div>
 
 <div class="show-pin">
+   <div class="pic">
+    <img src="<%= @pin.image.url(:medium) %>">
+  </div>
   <p><%= "#{@pin.text}" %></p>
 
   <hr/>
