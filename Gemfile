@@ -1,6 +1,11 @@
 source 'https://rubygems.org'
 
+gem 'paperclip'
 
+
+gem 'aws-sdk', '< 2.0'
+
+gem 'rails_12factor'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use postgresql as the database for Active Record
@@ -40,16 +45,9 @@ group :development, :test do
   gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring', '~>1.3.4'
+  gem 'spring'
   gem 'database_cleaner'
 end
 
 gem 'rspec'
 gem 'rspec-rails'
-# Adding 12 factor which includes standards and best practices for modern web apps
-# Log to stdout instead of a log file and Deliver assets in the same way in production and development
-gem 'rails_12factor'
-
-# To add image upload to the pins
-gem 'paperclip'
-gem 'aws-sdk'
