@@ -42,17 +42,14 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', '~>1.3.4'
   gem 'database_cleaner'
-
-
-  gem 'rspec-expectations'
 end
 
 gem 'rspec'
 gem 'rspec-rails'
-
-
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-  
+# Adding 12 factor which includes standards and best practices for modern web apps
+# Log to stdout instead of a log file and Deliver assets in the same way in production and development
 gem 'rails_12factor'
+
+# To add image upload to the pins
 gem 'paperclip'
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk'
