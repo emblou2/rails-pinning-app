@@ -42,15 +42,7 @@ class PinsController < ApplicationController
       render :edit
     end
 
-   # if @pin.valid?
-    #  @pin.save
-     # redirect edit_pin_path(@pin)
-    #else
-     # @pin.errors.full_messages.each do |msg|
-      #  @errors = "#{@errors} #{msg}."
-      #end
-      #render :edit   
-    #end
+   
   end
 
 # GET /pins/new
